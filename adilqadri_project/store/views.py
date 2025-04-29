@@ -1,29 +1,9 @@
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .models import Product, Cart, CartItem, Category
-from django.views.decorators.http import require_POST
-
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('product_list')
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
-
-@login_required
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
-from .models import Product, Cart, CartItem, Category
+from django.db.models import Q
+from .models import Product, Cart, CartItem, Category, Order
 from django.views.decorators.http import require_POST
 
 def register(request):
@@ -39,11 +19,26 @@ def register(request):
 
 @login_required
 def product_list(request):
+    query = request.GET.get('q', '')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    min_rating = request.GET.get('min_rating')
+
     products = Product.objects.all()
-    print("Number of products:", products.count())
-    for product in products:
-        print(f"Product: {product.name} - Price: {product.price}")
-    return render(request, 'store/product_list.html', {'products': products})
+
+    if query:
+        products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
+
+    if min_price:
+        products = products.filter(price__gte=min_price)
+
+    if max_price:
+        products = products.filter(price__lte=max_price)
+
+    if min_rating:
+        products = products.filter(rating__gte=min_rating)
+
+    return render(request, 'store/product_list.html', {'products': products, 'query': query, 'min_price': min_price, 'max_price': max_price, 'min_rating': min_rating})
 
 def product_list_by_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
@@ -113,3 +108,14 @@ def checkout(request):
 @login_required
 def profile(request):
     return render(request, 'store/profile.html', {'user': request.user})
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'store/order_history.html', {'orders': orders})
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'store/order_detail.html', {'order': order})
+</create_file>
