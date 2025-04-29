@@ -14,28 +14,40 @@
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Playfair Display', serif;
     }
+    /* Subtle fade-in animation for product cards */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body class="bg-white text-gray-900">
   <!-- Header -->
-  <header class="bg-white shadow-md sticky top-0 z-50">
+  <header class="bg-white shadow-md sticky top-0 z-50" role="banner">
     <div class="container mx-auto flex items-center justify-between py-4 px-6">
-      <a href="/" class="flex items-center space-x-3">
+      <a href="/" class="flex items-center space-x-3" aria-label="Adil Qadri Home">
         <img src="https://www.adilqadri.com/cdn/shop/files/Logo.png?v=1694244694&width=140" alt="Adil Qadri Logo" class="h-10" />
         <span class="text-2xl font-bold text-gray-900">AdilQadri</span>
       </a>
-      <nav class="hidden md:flex space-x-6 font-semibold text-gray-700">
+      <nav class="hidden md:flex space-x-6 font-semibold text-gray-700" role="navigation" aria-label="Primary">
         <a href="/" class="hover:text-gray-900 transition">Best Sellers</a>
-        <a href="/" class="hover:text-gray-900 transition">Combos</a>
-        <a href="/" class="hover:text-gray-900 transition">Light</a>
-        <a href="/" class="hover:text-gray-900 transition">Oudh</a>
-        <a href="/" class="hover:text-gray-900 transition">Strong</a>
+        <a href="/?q=combo" class="hover:text-gray-900 transition">Combos</a>
+        <a href="/?q=light" class="hover:text-gray-900 transition">Light</a>
+        <a href="/?q=oudh" class="hover:text-gray-900 transition">Oudh</a>
+        <a href="/?q=strong" class="hover:text-gray-900 transition">Strong</a>
       </nav>
       <div class="flex items-center space-x-4">
         <button aria-label="Search" class="text-gray-600 hover:text-gray-900 transition">
           <i class="fas fa-search fa-lg"></i>
         </button>
-        <a href="#" class="relative text-gray-600 hover:text-gray-900 transition">
+        <a href="#" class="relative text-gray-600 hover:text-gray-900 transition" aria-label="Shopping cart">
           <i class="fas fa-shopping-cart fa-lg"></i>
           <span class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">0</span>
         </a>
@@ -57,60 +69,65 @@
     </div>
   </header>
 
-  <!-- Promotional Banner -->
-  <section class="bg-yellow-100 text-yellow-900 py-3 text-center font-semibold text-sm">
-    🎉 Buy More Save More 🎉 Discount upto 15% Off Sitewide
+  <!-- Search and Filter -->
+  <section class="container mx-auto px-6 md:px-12 py-6">
+    <form method="get" class="flex flex-wrap items-center space-x-4" role="search" aria-label="Product search and filter">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search products..." class="border border-gray-300 rounded px-3 py-2 flex-grow" aria-label="Search products" />
+      <input type="number" name="min_price" value="{{ min_price }}" placeholder="Min Price" class="border border-gray-300 rounded px-3 py-2 w-24" aria-label="Minimum price" />
+      <input type="number" name="max_price" value="{{ max_price }}" placeholder="Max Price" class="border border-gray-300 rounded px-3 py-2 w-24" aria-label="Maximum price" />
+      <select name="min_rating" class="border border-gray-300 rounded px-3 py-2 w-24" aria-label="Minimum rating">
+        <option value="">Min Rating</option>
+        <option value="1" {% if min_rating == '1' %}selected{% endif %}>1+</option>
+        <option value="2" {% if min_rating == '2' %}selected{% endif %}>2+</option>
+        <option value="3" {% if min_rating == '3' %}selected{% endif %}>3+</option>
+        <option value="4" {% if min_rating == '4' %}selected{% endif %}>4+</option>
+        <option value="5" {% if min_rating == '5' %}selected{% endif %}>5</option>
+      </select>
+      <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded">Filter</button>
+    </form>
   </section>
 
-  <!-- Debug Info -->
-  <div style="background-color: #ff0 !important; padding: 20px !important; margin: 20px !important; border: 4px solid #f00 !important; position: relative !important; z-index: 9999 !important;">
-    <h3 style="font-weight: bold !important; color: #000 !important;">Debug Information:</h3>
-    <p>Number of products: {{ products|length }}</p>
-    <ul>
-    {% for product in products %}
-      <li style="color: #000 !important;">{{ product.name }} - ₹{{ product.price }}</li>
-    {% endfor %}
-    </ul>
-  </div>
-
-  <!-- Product Grid Section -->
-  <section style="background: #f0f0f0 !important; padding: 20px !important; margin: 20px !important; border: 2px solid #000 !important;">
-    <h2 style="font-size: 24px !important; color: #000 !important; margin-bottom: 20px !important;">Our Products</h2>
-    
-    <div style="display: grid !important; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important; gap: 20px !important;">
-      {% for product in products %}
-      <div style="background: #fff !important; padding: 15px !important; border: 1px solid #ddd !important; border-radius: 8px !important;">
-        <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100% !important; height: 200px !important; object-fit: cover !important; margin-bottom: 10px !important;" />
-        <h3 style="font-size: 18px !important; color: #000 !important; margin-bottom: 10px !important;">{{ product.name }}</h3>
-        <p style="font-size: 20px !important; color: #000 !important; font-weight: bold !important;">₹{{ product.price }}</p>
-        {% if product.discount_price %}
-        <p style="text-decoration: line-through !important; color: #666 !important;">₹{{ product.discount_price }}</p>
-        {% endif %}
-        <form method="post" action="{% url 'add_to_cart' product.slug %}">
-          {% csrf_token %}
-          <button type="submit" style="width: 100% !important; background: #f90 !important; color: #fff !important; padding: 10px !important; border: none !important; border-radius: 4px !important; margin-top: 10px !important;">Add to Cart</button>
-        </form>
+  <!-- Product Grid -->
+  <main class="container mx-auto px-6 md:px-12 space-y-16">
+    <section>
+      <h2 class="text-3xl font-bold mb-6">Explore Our Products</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        {% for product in products %}
+        <article class="fade-in border rounded-lg p-4 shadow hover:shadow-lg transition" role="listitem" tabindex="0" aria-label="{{ product.name }}">
+          <a href="{% url 'product_detail' product.slug %}" class="block mb-4">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-64 object-cover rounded" />
+          </a>
+          <h3 class="text-lg font-semibold mb-1">{{ product.name }}</h3>
+          <div class="flex items-center space-x-2 text-yellow-500 mb-2" aria-label="Rating: {{ product.rating }} out of 5 stars">
+            {% for i in "12345" %}
+              {% if forloop.counter <= product.rating|floatformat:0 %}
+                <i class="fas fa-star"></i>
+              {% elif product.rating|floatformat:0 < forloop.counter and product.rating|floatformat:1 > forloop.counter0 %}
+                <i class="fas fa-star-half-alt"></i>
+              {% else %}
+                <i class="far fa-star"></i>
+              {% endif %}
+            {% endfor %}
+            <span class="text-gray-600 text-sm">({{ product.rating }} | {{ product.num_reviews }})</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold text-gray-900">₹{{ product.price }}</span>
+            {% if product.discount_price %}
+            <span class="line-through text-gray-400">₹{{ product.discount_price }}</span>
+            {% endif %}
+          </div>
+          <form method="post" action="{% url 'add_to_cart' product.slug %}">
+            {% csrf_token %}
+            <button type="submit" class="mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded transition">Add to Cart</button>
+          </form>
+        </article>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
-  </section>
-
-  <!-- Hero Section -->
-  <section class="relative bg-gray-50 py-12 px-6 md:px-12">
-    <div class="container mx-auto flex flex-col md:flex-row items-center gap-8">
-      <div class="md:w-1/2 space-y-6">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">Luxury Premium Perfumes</h1>
-        <p class="text-gray-700 text-lg">Experience the finest attars and perfume sprays crafted for sophistication and elegance.</p>
-        <a href="/" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded shadow transition">Shop Best Sellers</a>
-      </div>
-      <div class="md:w-1/2">
-        <img src="https://www.adilqadri.com/cdn/shop/files/hero-img.jpg?v=1740055361&width=1500" alt="Perfume Discovery Set" class="rounded-lg shadow-lg" />
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-8 mt-16">
+  <footer class="bg-gray-900 text-gray-300 py-8 mt-16" role="contentinfo">
     <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between">
       <div class="mb-6 md:mb-0">
         <h3 class="text-lg font-semibold mb-2">Adil Qadri</h3>
@@ -125,3 +142,4 @@
   </footer>
 </body>
 </html>
+</create_file>
