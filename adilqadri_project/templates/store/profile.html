@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Profile - Adil Qadri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between py-4 px-6">
+      <a href="/" class="flex items-center space-x-3">
+        <img src="https://www.adilqadri.com/cdn/shop/files/Logo.png?v=1694244694&width=140" alt="Adil Qadri Logo" class="h-10" />
+        <span class="text-2xl font-bold text-gray-900">AdilQadri</span>
+      </a>
+      <nav class="hidden md:flex space-x-6 font-semibold text-gray-700">
+        <a href="/" class="hover:text-gray-900 transition">Best Sellers</a>
+        <a href="/" class="hover:text-gray-900 transition">Combos</a>
+        <a href="/" class="hover:text-gray-900 transition">Light</a>
+        <a href="/" class="hover:text-gray-900 transition">Oudh</a>
+        <a href="/" class="hover:text-gray-900 transition">Strong</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="/accounts/logout/" class="text-sm text-gray-600 hover:text-gray-900">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-6 md:px-12 py-12">
+    <h1 class="text-4xl font-bold mb-8">User Profile</h1>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+      <p><strong>Username:</strong> {{ user.username }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <!-- Add more user info and editable fields as needed -->
+    </div>
+  </main>
+</body>
+</html>
