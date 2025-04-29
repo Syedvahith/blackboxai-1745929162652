@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adil Qadri | Luxury Premium Perfumes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between py-4 px-6">
+      <a href="/" class="flex items-center space-x-3">
+        <img src="https://www.adilqadri.com/cdn/shop/files/Logo.png?v=1694244694&width=140" alt="Adil Qadri Logo" class="h-10" />
+        <span class="text-2xl font-bold text-gray-900">AdilQadri</span>
+      </a>
+      <nav class="hidden md:flex space-x-6 font-semibold text-gray-700">
+        <a href="/" class="hover:text-gray-900 transition">Best Sellers</a>
+        <a href="/" class="hover:text-gray-900 transition">Combos</a>
+        <a href="/" class="hover:text-gray-900 transition">Light</a>
+        <a href="/" class="hover:text-gray-900 transition">Oudh</a>
+        <a href="/" class="hover:text-gray-900 transition">Strong</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <button aria-label="Search" class="text-gray-600 hover:text-gray-900 transition">
+          <i class="fas fa-search fa-lg"></i>
+        </button>
+        <a href="#" class="relative text-gray-600 hover:text-gray-900 transition">
+          <i class="fas fa-shopping-cart fa-lg"></i>
+          <span class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">0</span>
+        </a>
+        {% if user.is_authenticated %}
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-700">Welcome, {{ user.username }}</span>
+            {% if user.is_staff %}
+              <a href="/admin/" class="text-sm text-yellow-600 hover:text-yellow-700">Admin</a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="text-sm text-gray-600 hover:text-gray-900">Logout</a>
+          </div>
+        {% else %}
+          <div class="flex items-center space-x-4">
+            <a href="{% url 'login' %}" class="text-sm text-gray-600 hover:text-gray-900">Login</a>
+            <a href="{% url 'register' %}" class="text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Register</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Promotional Banner -->
+  <section class="bg-yellow-100 text-yellow-900 py-3 text-center font-semibold text-sm">
+    🎉 Buy More Save More 🎉 Discount upto 15% Off Sitewide
+  </section>
+
+  <!-- Debug Info -->
+  <div style="background-color: #ff0 !important; padding: 20px !important; margin: 20px !important; border: 4px solid #f00 !important; position: relative !important; z-index: 9999 !important;">
+    <h3 style="font-weight: bold !important; color: #000 !important;">Debug Information:</h3>
+    <p>Number of products: {{ products|length }}</p>
+    <ul>
+    {% for product in products %}
+      <li style="color: #000 !important;">{{ product.name }} - ₹{{ product.price }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Product Grid Section -->
+  <section style="background: #f0f0f0 !important; padding: 20px !important; margin: 20px !important; border: 2px solid #000 !important;">
+    <h2 style="font-size: 24px !important; color: #000 !important; margin-bottom: 20px !important;">Our Products</h2>
+    
+    <div style="display: grid !important; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important; gap: 20px !important;">
+      {% for product in products %}
+      <div style="background: #fff !important; padding: 15px !important; border: 1px solid #ddd !important; border-radius: 8px !important;">
+        <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100% !important; height: 200px !important; object-fit: cover !important; margin-bottom: 10px !important;" />
+        <h3 style="font-size: 18px !important; color: #000 !important; margin-bottom: 10px !important;">{{ product.name }}</h3>
+        <p style="font-size: 20px !important; color: #000 !important; font-weight: bold !important;">₹{{ product.price }}</p>
+        {% if product.discount_price %}
+        <p style="text-decoration: line-through !important; color: #666 !important;">₹{{ product.discount_price }}</p>
+        {% endif %}
+        <form method="post" action="{% url 'add_to_cart' product.slug %}">
+          {% csrf_token %}
+          <button type="submit" style="width: 100% !important; background: #f90 !important; color: #fff !important; padding: 10px !important; border: none !important; border-radius: 4px !important; margin-top: 10px !important;">Add to Cart</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Hero Section -->
+  <section class="relative bg-gray-50 py-12 px-6 md:px-12">
+    <div class="container mx-auto flex flex-col md:flex-row items-center gap-8">
+      <div class="md:w-1/2 space-y-6">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">Luxury Premium Perfumes</h1>
+        <p class="text-gray-700 text-lg">Experience the finest attars and perfume sprays crafted for sophistication and elegance.</p>
+        <a href="/" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded shadow transition">Shop Best Sellers</a>
+      </div>
+      <div class="md:w-1/2">
+        <img src="https://www.adilqadri.com/cdn/shop/files/hero-img.jpg?v=1740055361&width=1500" alt="Perfume Discovery Set" class="rounded-lg shadow-lg" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-8 mt-16">
+    <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between">
+      <div class="mb-6 md:mb-0">
+        <h3 class="text-lg font-semibold mb-2">Adil Qadri</h3>
+        <p>Luxury Premium Perfumes</p>
+      </div>
+      <div class="space-x-6">
+        <a href="#" class="hover:text-white transition">Privacy Policy</a>
+        <a href="#" class="hover:text-white transition">Terms of Service</a>
+        <a href="#" class="hover:text-white transition">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
