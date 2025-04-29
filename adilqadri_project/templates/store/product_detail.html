@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ product.name }} | Adil Qadri</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between py-4 px-6">
+      <a href="/" class="flex items-center space-x-3">
+        <img src="https://www.adilqadri.com/cdn/shop/files/Logo.png?v=1694244694&width=140" alt="Adil Qadri Logo" class="h-10" />
+        <span class="text-2xl font-bold text-gray-900">AdilQadri</span>
+      </a>
+      <nav class="hidden md:flex space-x-6 font-semibold text-gray-700">
+        <a href="/collections/adilqadri-best-sellers" class="hover:text-gray-900 transition">Best Sellers</a>
+        <a href="/collections/combo-offers" class="hover:text-gray-900 transition">Combos</a>
+        <a href="/collections/adilqadri-light-fragrance" class="hover:text-gray-900 transition">Light</a>
+        <a href="/collections/adilqadri-oudh-collection" class="hover:text-gray-900 transition">Oudh</a>
+        <a href="/collections/adilqadri-strong-fragrances" class="hover:text-gray-900 transition">Strong</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <button aria-label="Search" class="text-gray-600 hover:text-gray-900 transition">
+          <i class="fas fa-search fa-lg"></i>
+        </button>
+        <a href="#" class="relative text-gray-600 hover:text-gray-900 transition">
+          <i class="fas fa-shopping-cart fa-lg"></i>
+          <span class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Product Detail -->
+  <main class="container mx-auto px-6 md:px-12 py-12">
+    <div class="md:flex md:space-x-12">
+      <div class="md:w-1/2">
+        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="rounded-lg shadow-lg w-full object-cover" />
+      </div>
+      <div class="md:w-1/2 space-y-6">
+        <h1 class="text-4xl font-bold">{{ product.name }}</h1>
+        <div class="flex items-center space-x-2 text-yellow-500">
+          {% for i in "12345" %}
+            {% if forloop.counter <= product.rating|floatformat:0 %}
+              <i class="fas fa-star"></i>
+            {% elif product.rating|floatformat:0 < forloop.counter and product.rating|floatformat:1 > forloop.counter0 %}
+              <i class="fas fa-star-half-alt"></i>
+            {% else %}
+              <i class="far fa-star"></i>
+            {% endif %}
+          {% endfor %}
+          <span class="text-gray-600 text-sm">({{ product.rating }} | {{ product.num_reviews }})</span>
+        </div>
+        <p class="text-gray-700 text-lg">{{ product.description }}</p>
+        <div class="flex items-center space-x-4">
+          <span class="text-3xl font-bold text-gray-900">₹{{ product.price }}</span>
+          {% if product.discount_price %}
+          <span class="line-through text-gray-400 text-xl">₹{{ product.discount_price }}</span>
+          {% endif %}
+        </div>
+        <form method="post" action="{% url 'add_to_cart' product.slug %}">
+          {% csrf_token %}
+          <button type="submit" class="mt-6 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded transition">Add to cart</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-8 mt-16">
+    <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between">
+      <div class="mb-6 md:mb-0">
+        <h3 class="text-lg font-semibold mb-2">Adil Qadri</h3>
+        <p>Luxury Premium Perfumes</p>
+      </div>
+      <div class="space-x-6">
+        <a href="#" class="hover:text-white transition">Privacy Policy</a>
+        <a href="#" class="hover:text-white transition">Terms of Service</a>
+        <a href="#" class="hover:text-white transition">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
